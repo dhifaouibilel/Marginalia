@@ -1,0 +1,26 @@
+    </main>
+
+    <footer class="sitefoot">
+      <div class="sitefoot__inner">
+        <svg class="sitefoot__quill" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M20 4c-6 0-11 4-13 11l-2 5 5-2C17 16 20 11 20 4Z" />
+          <path d="M12 12 5 19" />
+        </svg>
+        <p class="sitefoot__quote">"It is a good thing for an uneducated man to read books of quotations."</p>
+        <p class="sitefoot__meta">Marginalia &mdash; a shelf of things worth re-reading.</p>
+      </div>
+    </footer>
+
+    <script>
+      (function () {
+        var masthead = document.querySelector(".masthead");
+        if (!masthead) return;
+        var sync = function () {
+          masthead.classList.toggle("masthead--scrolled", window.scrollY > 24);
+        };
+        sync();
+        window.addEventListener("scroll", sync, { passive: true });
+      })();
+    </script>
+  </body>
+</html>

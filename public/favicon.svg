@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fbf7ef"/>
+      <stop offset="1" stop-color="#f0e7d6"/>
+    </linearGradient>
+    <linearGradient id="book" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3a5a78"/>
+      <stop offset="1" stop-color="#25415c"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="2" y="2" width="60" height="60" rx="15" fill="url(#bg)" stroke="#e3d8c2" stroke-width="1.5"/>
+
+  <!-- open book -->
+  <path d="M32 18c-4.6-3.1-10.2-3.6-15-1.4v27c4.8-2.2 10.4-1.7 15 1.4 4.6-3.1 10.2-3.6 15-1.4v-27c-4.8-2.2-10.4-1.7-15 1.4Z"
+        fill="url(#book)"/>
+  <path d="M32 18v26" stroke="#fbf7ef" stroke-width="2.4" stroke-linecap="round"/>
+  <path d="M22 24.5c2.8-1 5.7-1.1 8 0M22 30c2.8-1 5.7-1.1 8 0M34 24.5c2.3-1.1 5.2-1 8 0M34 30c2.3-1.1 5.2-1 8 0"
+        stroke="#fbf7ef" stroke-width="1.6" stroke-linecap="round" opacity="0.7"/>
+
+  <!-- knowledge spark -->
+  <g stroke="#c99a3c" stroke-width="2.2" stroke-linecap="round">
+    <path d="M47 13v6M44 16h6"/>
+  </g>
+  <circle cx="16.5" cy="15" r="2" fill="#b5642f"/>
+</svg>

@@ -1,0 +1,284 @@
+<%- include("partials/header") %>
+
+<%
+  const genres = [...new Set(books.map((b) => b.genre))].sort();
+
+  // small inline icon per theme (feather-style, 24x24)
+  function themeIcon(name) {
+    const key = String(name).toLowerCase();
+    const icons = {
+      all: '<path d="M12 3 3 8l9 5 9-5-9-5Z"/><path d="M3 13l9 5 9-5"/><path d="M3 18l9 5 9-5"/>',
+      "science fiction": '<path d="M12 2c3.5 3 5 6.5 5 10a5 5 0 0 1-10 0c0-3.5 1.5-7 5-10Z"/><circle cx="12" cy="11" r="1.6"/><path d="M8.5 17c-2 1-3 2.5-3 4 1.5 0 3-.7 4-2M15.5 17c2 1 3 2.5 3 4-1.5 0-3-.7-4-2"/>',
+      fantasy: '<path d="m5 19 8-8"/><path d="M15 5.5 18.5 9"/><path d="M13 3.5 15 6l-2 2-2.5-2Z"/><path d="M19 13l.6 1.7L21 15l-1.4.8L19 17l-.6-1.7L17 15l1.4-.3Z"/><path d="M6 5l.5 1.4L8 7l-1.4.6L6 9l-.5-1.4L4 7l1.4-.3Z"/>',
+      "literary fiction": '<path d="M20 4c-6 0-11 4-13 11l-2 5 5-2C17 16 20 11 20 4Z"/><path d="M12 12 5 19"/>',
+      "historical fiction": '<path d="M6 3h12"/><path d="M6 21h12"/><path d="M8 3c0 5 8 5 8 9s-8 4-8 9"/><path d="M16 3c0 5-8 5-8 9s8 4 8 9"/>',
+      fiction: '<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H6.5A2.5 2.5 0 0 0 4 21.5V5.5Z"/><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>',
+      novel: '<path d="M6 3h11a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"/><path d="M11 3v8l2.5-1.9L16 11V3"/>',
+      history: '<path d="M12 3 3 8h18L12 3Z"/><path d="M4 21h16"/><path d="M3 21v-2h18v2"/><path d="M6 19v-9M10 19v-9M14 19v-9M18 19v-9"/>',
+      "short stories": '<path d="M9 4h8a1 1 0 0 1 1 1v10"/><rect x="4" y="7" width="12" height="14" rx="1"/><path d="M7 12h6M7 16h6"/>',
+      memoir: '<rect x="4" y="3" width="16" height="18" rx="1.5"/><circle cx="12" cy="10" r="2.6"/><path d="M7.5 18c.7-2.3 2.5-3.5 4.5-3.5s3.8 1.2 4.5 3.5"/>',
+    };
+    const path = icons[key] || icons.fiction;
+    return '<svg viewBox="0 0 24 24" aria-hidden="true">' + path + "</svg>";
+  }
+
+  const fmtDate = (d) =>
+    new Date(d).toLocaleDateString("en-US", { month: "long", year: "numeric" });
+
+  const avgRating = books.reduce((s, b) => s + b.rating, 0) / books.length;
+
+  // data for the client-side "Surprise me" swap (no page reload)
+  const booksData = books.map((b) => ({
+    title: b.title,
+    author: b.author,
+    cover: b.cover,
+    rating: b.rating,
+    genre: b.genre,
+    date: fmtDate(b.date_read),
+    resume: b.resume,
+    icon: themeIcon(b.genre),
+  }));
+%>
+
+<!-- ============ 1 · Hero — pitch (left) + random pick (right) ============ -->
+<section class="featured">
+  <%# hero background photo: library shelves by Iñaki del Olmo on Unsplash (free license) %>
+  <div class="featured__bg" aria-hidden="true"></div>
+
+  <div class="wrap featured__inner">
+    <div class="hero-copy">
+      <p class="hero-eyebrow">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H6.5A2.5 2.5 0 0 0 4 21.5V5.5Z"/><path d="M8 3v14"/></svg>
+        Marginalia &middot; reading journal
+      </p>
+
+      <h1 class="hero-title">Every book I read,<br /><span class="grad">and why it stuck.</span></h1>
+
+      <p class="hero-lede">
+        A personal shelf of honest, spoiler-free reviews &mdash; each one rated,
+        tagged by theme, and easy to browse. Find your next read, or see what a
+        book really left behind.
+      </p>
+
+      <div class="hero-actions">
+        <a class="btn btn--primary" href="#shelf">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V6a2 2 0 0 1 2-2h9v15M4 19a2 2 0 0 0 2 2h11M4 19a2 2 0 0 1 2-2h9"/></svg>
+          Browse the shelf
+        </a>
+        <a class="btn btn--ghost" href="/">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7M3 4v4h4"/></svg>
+          Surprise me
+        </a>
+      </div>
+
+      <div class="hero-stats">
+        <div><span class="hero-stat__num"><%= books.length %></span><span class="hero-stat__label">books reviewed</span></div>
+        <div><span class="hero-stat__num"><span class="s">★</span> <%= avgRating.toFixed(1) %></span><span class="hero-stat__label">average rating</span></div>
+        <div><span class="hero-stat__num"><%= genres.length %></span><span class="hero-stat__label">themes</span></div>
+      </div>
+    </div>
+
+    <article class="pick-card" data-genre="<%= featured.genre %>">
+      <span class="pick-card__tag">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8L4.5 9.2l5.9-.9L12 3Z"/></svg>
+        Random pick
+      </span>
+
+      <div class="pick-card__grid">
+        <img class="pick-card__cover" src="<%= featured.cover %>" alt="Cover of <%= featured.title %>" />
+
+        <div>
+          <h2 class="pick-card__title"><%= featured.title %></h2>
+          <p class="pick-card__author">by <%= featured.author %></p>
+          <div class="rating-line">
+            <span class="rating" style="--rating: <%= featured.rating %>;" aria-label="Rated <%= featured.rating %> out of 5">
+              <span class="stars-track">★★★★★</span>
+              <span class="stars-fill">★★★★★</span>
+            </span>
+            <span class="rating-number"><%= featured.rating.toFixed(1) %> / 5</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="pick-card__resume"><%= featured.resume %></p>
+
+      <div class="pick-card__meta">
+        <span class="pill pill--theme"><%- themeIcon(featured.genre) %><span class="js-genre"><%= featured.genre %></span></span>
+        <span class="pill">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>
+          Read <span class="js-date"><%= fmtDate(featured.date_read) %></span>
+        </span>
+      </div>
+    </article>
+  </div>
+
+  <a class="scroll-cue" href="#shelf" aria-label="Scroll to the shelf">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+  </a>
+</section>
+
+<!-- ============ 2 · The shelf, filtered by theme ============ -->
+<section class="shelf-section wrap" id="shelf">
+  <header class="shelf-head">
+    <h2 class="shelf-head__title">The shelf</h2>
+    <p class="shelf-head__sub">
+      <span id="shelf-count" aria-live="polite"><%= books.length %> books</span> &middot; filter by theme
+    </p>
+  </header>
+
+  <div class="filterbar" role="group" aria-label="Filter by theme">
+    <button class="chip is-active" data-genre="all" type="button" aria-pressed="true">
+      <%- themeIcon("all") %>All
+    </button>
+    <% genres.forEach(function (g) { %>
+      <button class="chip" data-genre="<%= g %>" type="button" aria-pressed="false">
+        <%- themeIcon(g) %><%= g %>
+      </button>
+    <% }); %>
+  </div>
+
+  <div class="book-grid">
+    <% books.forEach(function (book) { %>
+      <article class="book-card" data-genre="<%= book.genre %>">
+        <div class="cover-wrap">
+          <img src="<%= book.cover %>" alt="Cover of <%= book.title %>" class="cover" loading="lazy" />
+          <span class="genre-tag"><%- themeIcon(book.genre) %><%= book.genre %></span>
+        </div>
+
+        <div class="card-body">
+          <h3 class="book-title"><%= book.title %></h3>
+          <p class="book-author">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+            <%= book.author %>
+          </p>
+
+          <div class="rating-line">
+            <span class="rating" style="--rating: <%= book.rating %>;" aria-label="Rated <%= book.rating %> out of 5">
+              <span class="stars-track">★★★★★</span>
+              <span class="stars-fill">★★★★★</span>
+            </span>
+            <span class="rating-number"><%= book.rating.toFixed(1) %></span>
+          </div>
+
+          <p class="book-resume"><%= book.resume %></p>
+
+          <div class="card-footer">
+            <span class="date-read">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>
+              Read <%= new Date(book.date_read).toLocaleDateString("en-US", { month: "short", year: "numeric" }) %>
+            </span>
+          </div>
+        </div>
+      </article>
+    <% }); %>
+  </div>
+
+  <p class="empty-state" hidden>No books under that theme yet.</p>
+</section>
+
+<script type="application/json" id="books-data"><%- JSON.stringify(booksData) %></script>
+
+<script>
+  (function () {
+    const total = document.querySelectorAll(".book-card").length;
+
+    /* ---- theme filter: hide/show + live count + pressed state ---- */
+    const chips = Array.from(document.querySelectorAll(".chip"));
+    const cards = Array.from(document.querySelectorAll(".book-card"));
+    const empty = document.querySelector(".empty-state");
+    const count = document.getElementById("shelf-count");
+
+    function applyFilter(genre) {
+      let shown = 0;
+      cards.forEach((card) => {
+        const match = genre === "all" || card.dataset.genre === genre;
+        card.hidden = !match;
+        if (match) {
+          shown++;
+          card.classList.add("in"); // keep revealed cards visible
+        }
+      });
+      empty.hidden = shown !== 0;
+      if (count) {
+        count.textContent =
+          genre === "all"
+            ? total + " books"
+            : shown + " of " + total + " books";
+      }
+    }
+
+    chips.forEach((chip) => {
+      chip.addEventListener("click", () => {
+        chips.forEach((c) => {
+          c.classList.toggle("is-active", c === chip);
+          c.setAttribute("aria-pressed", c === chip ? "true" : "false");
+        });
+        applyFilter(chip.dataset.genre);
+      });
+    });
+
+    /* ---- "Surprise me": swap the pick card in place, no reload ---- */
+    let books = [];
+    try {
+      books = JSON.parse(document.getElementById("books-data").textContent);
+    } catch (e) {}
+
+    const surprise = document.querySelector(".hero-actions .btn--ghost");
+    const card = document.querySelector(".pick-card");
+
+    if (surprise && card && books.length > 1) {
+      surprise.addEventListener("click", (e) => {
+        e.preventDefault();
+        const current = card.querySelector(".pick-card__title").textContent;
+        let pick;
+        do {
+          pick = books[Math.floor(Math.random() * books.length)];
+        } while (pick.title === current);
+
+        card.style.opacity = "0";
+        setTimeout(() => {
+          card.dataset.genre = pick.genre;
+          const img = card.querySelector(".pick-card__cover");
+          img.src = pick.cover;
+          img.alt = "Cover of " + pick.title;
+          card.querySelector(".pick-card__title").textContent = pick.title;
+          card.querySelector(".pick-card__author").textContent = "by " + pick.author;
+          const r = card.querySelector(".rating");
+          r.style.setProperty("--rating", pick.rating);
+          r.setAttribute("aria-label", "Rated " + pick.rating + " out of 5");
+          card.querySelector(".rating-number").textContent = pick.rating.toFixed(1) + " / 5";
+          card.querySelector(".pick-card__resume").textContent = pick.resume;
+          card.querySelector(".pill--theme").innerHTML = pick.icon + '<span class="js-genre">' + pick.genre + "</span>";
+          card.querySelector(".js-date").textContent = pick.date;
+          card.style.opacity = "1";
+        }, 180);
+      });
+    }
+
+    /* ---- progressive reveal of shelf cards ---- */
+    const reveal = window.matchMedia("(prefers-reduced-motion: no-preference)").matches;
+    if (reveal && "IntersectionObserver" in window) {
+      const io = new IntersectionObserver(
+        (entries, obs) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.style.transitionDelay =
+                (entry.target.dataset.i % 4) * 60 + "ms";
+              entry.target.classList.add("in");
+              obs.unobserve(entry.target);
+            }
+          });
+        },
+        { rootMargin: "0px 0px -8% 0px" }
+      );
+      cards.forEach((c, i) => {
+        c.dataset.i = i;
+        io.observe(c);
+      });
+    } else {
+      cards.forEach((c) => c.classList.add("in"));
+    }
+  })();
+</script>
+
+<%- include("partials/footer") %>

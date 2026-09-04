@@ -1,0 +1,20 @@
+{
+  "name": "book-reviews",
+  "version": "1.0.0",
+  "description": "A modern book & novel review site — practice project for Postgres + Express + EJS",
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^4.21.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  }
+}
