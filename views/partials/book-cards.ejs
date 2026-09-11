@@ -1,0 +1,44 @@
+<% books.forEach(function (book) { %>
+      <article class="book-card" data-genre="<%= book.genre %>">
+        <div class="cover-wrap">
+          <img src="<%= book.cover %>" alt="Cover of <%= book.title %>" class="cover" loading="lazy" />
+          <span class="genre-tag"><%- themeIcon(book.genre) %><%= book.genre %></span>
+        </div>
+
+        <div class="card-body">
+          <h3 class="book-title"><%= book.title %></h3>
+          <p class="book-author">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+            <%= book.author %>
+          </p>
+
+          <div class="rating-line">
+            <span class="rating" style="--rating: <%= book.rating %>;" aria-label="Rated <%= book.rating %> out of 5">
+              <span class="stars-track">★★★★★</span>
+              <span class="stars-fill">★★★★★</span>
+            </span>
+            <span class="rating-number"><%= book.rating.toFixed(1) %></span>
+          </div>
+
+          <p class="book-resume"><%= book.resume %></p>
+
+          <div class="card-footer">
+            <span class="date-read">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>
+              Read <%= new Date(book.date_read).toLocaleDateString("en-US", { month: "short", year: "numeric" }) %>
+            </span>
+          </div>
+        </div>
+      </article>
+    <% }); %>
+
+    <% if (!books.length) { %>
+  <div class="empty-state">
+    <svg class="empty-state__icon" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H6.5A2.5 2.5 0 0 0 4 21.5V5.5Z"/>
+      <path d="M8 3v14"/>
+    </svg>
+    <p class="empty-state__title">Nothing here yet</p>
+    <p class="empty-state__text">No books logged under this theme so far &mdash; pick another chip above, or check back after the next read.</p>
+  </div>
+<% } %>

@@ -42,6 +42,7 @@
   --g-history:     #6d5636;   /* warm brown */
   --g-short:       #9c5a4c;   /* clay       */
   --g-memoir:      #4f6d8a;   /* dusty blue */
+  --g-fiqh:        #1f6e6e;   /* deep teal   */
 
   --serif: "Fraunces", Georgia, "Times New Roman", serif;
   --sans:  "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -472,6 +473,7 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round
 [data-genre="History"]            { --genre: var(--g-history); }
 [data-genre="Short Stories"]      { --genre: var(--g-short); }
 [data-genre="Memoir"]             { --genre: var(--g-memoir); }
+[data-genre="Islamic Fiqh"]       { --genre: var(--g-fiqh); }
 
 /* ---------------------------------------------------------
    2 · Shelf heading
@@ -518,6 +520,7 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round
   border: 1px solid var(--border);
   border-radius: 999px;
   padding: 8px 15px;
+  text-decoration: none;
   cursor: pointer;
   transition: color 0.16s ease, background 0.16s ease, border-color 0.16s ease, transform 0.16s ease;
 }
@@ -575,6 +578,20 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round
   object-fit: cover;
   transition: transform 0.4s ease;
 }
+
+/* translucent dark "glass" pane over the cover image */
+.cover-wrap::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: rgba(0, 0, 0, 0.30);
+  transition: background 0.25s ease;
+}
+
+.book-card:hover .cover-wrap::after { background: rgba(0, 0, 0, 0.24); }
+
+.genre-tag { z-index: 1; }
 
 .book-card:hover .cover { transform: scale(1.04); }
 
@@ -743,6 +760,46 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round
   margin: 0;
 }
 
+.empty-state {
+  grid-column: 1 / -1;        /* span the whole book-grid, not one track */
+  text-align: center;
+  padding: 64px 20px;
+}
+
+.empty-state__icon {
+  width: 42px;
+  height: 42px;
+  margin: 0 auto 16px;
+  color: var(--ink-faint);
+}
+
+.empty-state__title {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 19px;
+  color: var(--ink);
+  margin: 0 0 6px;
+}
+
+.empty-state__text {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  max-width: 40ch;
+  margin: 0 auto;
+}
+.pick-card--empty {
+  display: grid;
+  place-items: center;
+  min-height: 180px;
+  text-align: center;
+}
+.pick-card__empty-text {
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--ink-soft);
+  margin: 0;
+}
 /* ---------------------------------------------------------
    Focus visibility
 --------------------------------------------------------- */
