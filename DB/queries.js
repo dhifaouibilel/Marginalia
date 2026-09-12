@@ -177,12 +177,38 @@ export async function getGenres() {
   }));
 }
 
+export async function getBookById(id) {
+  const { rows } = await db.query(
+    `select b.id, b.title, b.author, b.cover_url as cover, b.rating::float as rating,
+            b.date_read, b.resume, g.name as genre, g.id as genre_id
+     from books b join genres g on g.id = b.genre_id
+     where b.id = $1`,
+    [id]
+  );
+  return rows[0] || null;
+}
+
 export async function addBook(book) {
 //   await db.query("select id, name from genres order by name");
     const {title, author, cover_url, date_read, resume, rating, genre_id} = book
   await db.query("insert into books (title, author, resume, cover_url, rating, date_read, genre_id) values ($1,$2,$3,$4,$5,$6,$7)", [title, author, resume, cover_url, rating, date_read, genre_id])
 }
 
-// export async function createBook(book) {
-//     db.query("insert into books (title, author, cover_url, isbn, rating, date_read, resume,)")
-// }
+
+export async function deleteBook(bookId) {
+    await db.query("delete from books where id=$1",[bookId])
+}
+
+
+export async function updateBook(id, book) {
+  const { title, author, cover_url, date_read, resume, rating, genre_id } = book;
+  const { rows } = await db.query(
+    `update books
+     set title = $1, author = $2, resume = $3, cover_url = $4,
+         rating = $5, date_read = $6, genre_id = $7
+     where id = $8
+     returning id`,
+    [title, author, resume, cover_url, rating, date_read, genre_id, id]
+  );
+  return rows[0] || null;   // null means no book had that id
+}

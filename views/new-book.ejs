@@ -1,43 +1,69 @@
 <%- include("partials/header") %>
 
+<%
+  const val = typeof values !== "undefined" && values ? values : {};
+  const err = typeof errors !== "undefined" && errors ? errors : {};
+  const isEdit = typeof edit !== "undefined" && !!edit;
+
+  // <input type="date"> only accepts "YYYY-MM-DD" — a DB row comes back as a
+  // Date object (or full ISO string); a failed add-form re-submit is already a plain string.
+  function toDateInput(d) {
+    if (!d) return "";
+    const date = d instanceof Date ? d : new Date(d);
+    return isNaN(date) ? "" : date.toISOString().slice(0, 10);
+  }
+%>
+
 <section class="form-section wrap">
   <header class="shelf-head">
-    <h1 class="shelf-head__title">Add a book</h1>
-    <p class="shelf-head__sub">Log a new read onto the shelf.</p>
+    <h1 class="shelf-head__title"><%= isEdit ? "Edit book" : "Add a book" %></h1>
+    <p class="shelf-head__sub">
+      <%= isEdit ? "Update the details for this read." : "Log a new read onto the shelf." %>
+    </p>
   </header>
 
   <% if (typeof error !== "undefined" && error) { %>
     <p class="form-error"><%= error %></p>
   <% } %>
+  <% if (Object.keys(err).length) { %>
+    <p class="form-error">Please fix the fields highlighted below.</p>
+  <% } %>
 
-  <form class="book-form" action="/add" method="POST" novalidate>
-    <div class="field">
+  <form class="book-form" action="<%= isEdit ? '/books/' + val.id + '/edit' : '/add' %>" method="POST" novalidate>
+    <div class="field <%= err.title ? 'field--invalid' : '' %>">
       <label for="title">Title</label>
       <input id="title" name="title" type="text" placeholder="The Midnight Library" required autofocus
-             value="<%= typeof values !== 'undefined' && values ? values.title : '' %>" />
+             aria-invalid="<%= err.title ? 'true' : 'false' %>"
+             value="<%= val.title || '' %>" />
+      <% if (err.title) { %><p class="field__error"><%= err.title %></p><% } %>
     </div>
 
-    <div class="field">
+    <div class="field <%= err.author ? 'field--invalid' : '' %>">
       <label for="author">Author</label>
       <input id="author" name="author" type="text" placeholder="Matt Haig" required
-             value="<%= typeof values !== 'undefined' && values ? values.author : '' %>" />
+             aria-invalid="<%= err.author ? 'true' : 'false' %>"
+             value="<%= val.author || '' %>" />
+      <% if (err.author) { %><p class="field__error"><%= err.author %></p><% } %>
     </div>
 
     <div class="field-row">
-      <div class="field">
+      <div class="field <%= err.genre_id ? 'field--invalid' : '' %>">
         <label for="genre_id">Theme</label>
-        <select id="genre_id" name="genre_id" required>
-          <option value="" disabled selected>Choose a theme&hellip;</option>
+        <select id="genre_id" name="genre_id" required aria-invalid="<%= err.genre_id ? 'true' : 'false' %>">
+          <option value="" disabled <%= !val.genre_id ? 'selected' : '' %>>Choose a theme&hellip;</option>
           <% genres.forEach(function (g) { %>
-            <option value="<%= g.id %>"><%= g.name %></option>
+            <option value="<%= g.id %>" <%= String(val.genre_id) === String(g.id) ? 'selected' : '' %>><%= g.name %></option>
           <% }); %>
         </select>
+        <% if (err.genre_id) { %><p class="field__error"><%= err.genre_id %></p><% } %>
       </div>
 
-      <div class="field">
+      <div class="field <%= err.rating ? 'field--invalid' : '' %>">
         <label for="rating">Rating</label>
         <input id="rating" name="rating" type="number" min="0" max="5" step="0.5" placeholder="4.5" required
-               value="<%= typeof values !== 'undefined' && values ? values.rating : '' %>" />
+               aria-invalid="<%= err.rating ? 'true' : 'false' %>"
+               value="<%= val.rating || '' %>" />
+        <% if (err.rating) { %><p class="field__error"><%= err.rating %></p><% } %>
       </div>
     </div>
 
@@ -46,27 +72,36 @@
         <label for="cover_url">Cover image URL</label>
         <input id="cover_url" name="cover_url" type="url"
                placeholder="https://covers.openlibrary.org/b/isbn/9780000000000-L.jpg"
-               value="<%= typeof values !== 'undefined' && values ? values.cover_url : '' %>" />
+               value="<%= val.cover_url || val.cover || '' %>" />
       </div>
 
-      <div class="field">
+      <div class="field <%= err.date_read ? 'field--invalid' : '' %>">
         <label for="date_read">Date read</label>
         <input id="date_read" name="date_read" type="date" required
-               value="<%= typeof values !== 'undefined' && values ? values.date_read : '' %>" />
+               aria-invalid="<%= err.date_read ? 'true' : 'false' %>"
+               value="<%= toDateInput(val.date_read) %>" />
+        <% if (err.date_read) { %><p class="field__error"><%= err.date_read %></p><% } %>
       </div>
     </div>
 
-    <div class="field">
+    <div class="field <%= err.resume ? 'field--invalid' : '' %>">
       <label for="resume">Your take</label>
       <textarea id="resume" name="resume" rows="4" required
-                placeholder="A short, spoiler-free take on the book&hellip;"><%= typeof values !== "undefined" && values ? values.resume : "" %></textarea>
+                aria-invalid="<%= err.resume ? 'true' : 'false' %>"
+                placeholder="A short, spoiler-free take on the book&hellip;"><%= val.resume || "" %></textarea>
+      <% if (err.resume) { %><p class="field__error"><%= err.resume %></p><% } %>
     </div>
 
     <div class="form-actions">
-      <a class="btn btn--ghost" href="/">Cancel</a>
+      <a class="btn btn--ghost" href="<%= isEdit && val.id ? '/books/' + val.id : '/' %>">Cancel</a>
       <button class="btn btn--primary" type="submit">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
-        Add to the shelf
+        <% if (isEdit) { %>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+          Save changes
+        <% } else { %>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          Add to the shelf
+        <% } %>
       </button>
     </div>
   </form>

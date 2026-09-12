@@ -1,4 +1,5 @@
 <% books.forEach(function (book) { %>
+      <a class="book-card-link" href="/books/<%= book.id %>">
       <article class="book-card" data-genre="<%= book.genre %>">
         <div class="cover-wrap">
           <img src="<%= book.cover %>" alt="Cover of <%= book.title %>" class="cover" loading="lazy" />
@@ -30,6 +31,7 @@
           </div>
         </div>
       </article>
+      </a>
     <% }); %>
 
     <% if (!books.length) { %>
