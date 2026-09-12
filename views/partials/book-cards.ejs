@@ -34,13 +34,20 @@
       </a>
     <% }); %>
 
+    <% var q = typeof query !== "undefined" ? query : null; %>
     <% if (!books.length) { %>
   <div class="empty-state">
+    <% if (q) { %>
+    <svg class="empty-state__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <p class="empty-state__title">No matches</p>
+    <p class="empty-state__text">No books found for &ldquo;<%= q %>&rdquo;. Try a different title.</p>
+    <% } else { %>
     <svg class="empty-state__icon" viewBox="0 0 24 24" aria-hidden="true">
       <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H6.5A2.5 2.5 0 0 0 4 21.5V5.5Z"/>
       <path d="M8 3v14"/>
     </svg>
     <p class="empty-state__title">Nothing here yet</p>
     <p class="empty-state__text">No books logged under this theme so far &mdash; pick another chip above, or check back after the next read.</p>
+    <% } %>
   </div>
 <% } %>

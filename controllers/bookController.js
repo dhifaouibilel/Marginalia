@@ -1,7 +1,17 @@
 // controllers/bookController.js
-import { getBooks as loadBooks, getGenres, addBook, getBookById, deleteBook as removeBook, updateBook } from "../DB/queries.js";
+import { getBooks as loadBooks, getGenres, addBook, getBookById, deleteBook as removeBook, updateBook, getBookByTitle } from "../DB/queries.js";
 
 import { validateBook } from "../lib/validate-book.js";
+
+export async function getAbout(req, res) {           // full page: GET / and GET /genre/:slug
+  try {
+    
+    res.render("about.ejs");
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error });
+  }
+}
 
 async function resolveGenre(req) {
   const genres = await getGenres();
@@ -19,8 +29,8 @@ export async function getBooks(req, res) {           // full page: GET / and GET
     res.render("index.ejs", { books: filtredBooks, featured, genres, activeGenre: active ? active.slug : null });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "There is no data in DB" });
-  }
+    res.status(500).send("Something went wrong loading the shelf. Please try again.");
+}
 }
 
 export async function getBookCards(req, res) {        // fragment: GET /api/books(/:slug)
@@ -30,7 +40,7 @@ export async function getBookCards(req, res) {        // fragment: GET /api/book
     res.render("partials/book-cards", { books });
   } catch (error) {
     console.error(error);
-    res.status(500).send("");
+    res.status(500).send('<p class="empty-state__text">Could not load these books. Please try again.</p>');
   }
 }
 
@@ -41,8 +51,24 @@ export async function getBookDetails(req, res) {
         res.render("book-details.ejs",{book})
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: "There is no data for this book" });
+        res.status(500).send("Something went wrong loading this book. Please try again.");
     }
+}
+
+export async function searchByTitle(req, res) {
+  try {
+    const q = (req.query.q || "").trim();
+    if (!q) return res.redirect("/");
+
+    const match = await getBookByTitle(q);
+    if (match) return res.redirect(`/books/${match.id}`);
+
+    const genres = await getGenres();
+    res.render("index.ejs", { genres, books: [], featured: null, activeGenre: null, query: q }); // 200 — valid search, just nothing found
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Something went wrong while searching. Please try again.");
+  }
 }
 
 export async function newBook(req, res) {           // full page: GET / and GET /genre/:slug
@@ -80,11 +106,13 @@ export async function createBook(req, res) {
 export async function deleteBook(req, res) {
     try {
         const bookId = req.params.id
-        await removeBook(bookId)
+        const deleted = await removeBook(bookId);
+        if (!deleted) return res.status(404).send("This book doesn't exist.");
+
        res.redirect("/"); 
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: "This book not exist in DB" });
+        res.status(500).send("Something went wrong deleting this book. Please try again.");
     }
 }
 

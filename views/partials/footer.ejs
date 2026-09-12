@@ -22,6 +22,82 @@
         sync();
         window.addEventListener("scroll", sync, { passive: true });
       })();
+
+      /* ---- Browse: swap the wordmark for an inline search field ---- */
+      (function () {
+        var masthead = document.querySelector(".masthead");
+        var toggle = document.getElementById("browseToggle");
+        var input = document.getElementById("searchInput");
+        if (!masthead || !toggle || !input) return;
+
+        function isOpen() {
+          return masthead.classList.contains("is-searching");
+        }
+
+        function openSearch() {
+          masthead.classList.add("is-searching");
+          toggle.classList.add("is-active");
+          toggle.setAttribute("aria-expanded", "true");
+          setTimeout(function () { input.focus(); }, 320); // let the field finish growing in first
+        }
+
+        function closeSearch() {
+          masthead.classList.remove("is-searching");
+          toggle.classList.remove("is-active");
+          toggle.setAttribute("aria-expanded", "false");
+          input.value = "";
+          input.blur();
+          filterByTitle("");
+        }
+
+        function filterByTitle(query) {
+          var q = query.trim().toLowerCase();
+          var grid = document.querySelector(".book-grid");
+          var cards = grid ? grid.querySelectorAll(".book-card") : [];
+          var count = document.getElementById("shelf-count");
+          var searchEmpty = document.getElementById("searchEmpty");
+          var searchEmptyQuery = document.getElementById("searchEmptyQuery");
+          var shown = 0;
+
+          cards.forEach(function (card) {
+            var title = (card.querySelector(".book-title") || {}).textContent || "";
+            var match = !q || title.toLowerCase().includes(q);
+            card.hidden = !match;
+            if (match) shown++;
+          });
+
+          var total = cards.length;
+          if (count) count.textContent = q ? shown + " of " + total + " books" : total + " books";
+          if (searchEmpty) {
+            searchEmpty.hidden = !(q && shown === 0);
+            if (searchEmptyQuery) searchEmptyQuery.textContent = query.trim();
+          }
+        }
+
+        toggle.addEventListener("click", function () {
+          isOpen() ? closeSearch() : openSearch();
+        });
+
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape" && isOpen()) closeSearch();
+        });
+
+        document.addEventListener("click", function (e) {
+          if (!isOpen()) return;
+          var slot = toggle.closest(".browse-slot");
+          if (slot && !slot.contains(e.target)) closeSearch();
+        });
+
+        input.addEventListener("input", function () {
+          filterByTitle(input.value);
+        });
+
+        // let the genre-filter chips (index.ejs) re-apply the active search
+        // after they swap the grid's contents in from the server
+        window.reapplyBookSearch = function () {
+          filterByTitle(input.value);
+        };
+      })();
     </script>
   </body>
 </html>

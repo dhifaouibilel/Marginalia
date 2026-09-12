@@ -1,0 +1,79 @@
+<%- include("partials/header") %>
+
+<section class="about-hero wrap">
+  <p class="hero-eyebrow">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H6.5A2.5 2.5 0 0 0 4 21.5V5.5Z"/><path d="M8 3v14"/></svg>
+    About this shelf
+  </p>
+  <h1 class="about-hero__title">A personal shelf, <span class="grad">kept in the open.</span></h1>
+  <p class="about-hero__lede">
+    Marginalia started as scribbles in book margins and turned into this &mdash; a running,
+    honest log of everything I finish: why it stuck (or didn&rsquo;t), and what I&rsquo;d tell
+    a friend before they picked it up.
+  </p>
+
+  <% if (typeof totalBooks !== "undefined") { %>
+  <div class="hero-stats about-hero__stats">
+    <div><span class="hero-stat__num"><%= totalBooks %></span><span class="hero-stat__label">books reviewed</span></div>
+    <div><span class="hero-stat__num"><span class="s">&#9733;</span> <%= avgRating.toFixed(1) %></span><span class="hero-stat__label">average rating</span></div>
+    <div><span class="hero-stat__num"><%= totalGenres %></span><span class="hero-stat__label">themes</span></div>
+  </div>
+  <% } %>
+</section>
+
+<section class="about-section wrap">
+  <div class="about-grid">
+    <article class="about-card">
+      <svg class="about-card__icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M20 4c-6 0-11 4-13 11l-2 5 5-2C17 16 20 11 20 4Z"/>
+        <path d="M12 12 5 19"/>
+      </svg>
+      <h2 class="about-card__title">Why &ldquo;Marginalia&rdquo;?</h2>
+      <p class="about-card__text">
+        Marginalia are the notes a reader leaves in the margins of a book &mdash; a stray
+        thought, a question, a line worth remembering. This site is that same habit,
+        just moved online and kept a lot longer than pencil usually survives.
+      </p>
+    </article>
+
+    <article class="about-card">
+      <svg class="about-card__icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8L4.5 9.2l5.9-.9L12 3Z"/>
+      </svg>
+      <h2 class="about-card__title">How a rating works</h2>
+      <p class="about-card__text">
+        Ratings here are gut feeling, not a rubric &mdash; how much a book stayed with me
+        after I put it down, not how &ldquo;important&rdquo; it&rsquo;s supposed to be.
+        A quiet 5&#8202;/&#8202;5 and a flashy 3&#8202;/&#8202;5 are both telling the truth.
+      </p>
+    </article>
+
+    <article class="about-card">
+      <svg class="about-card__icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M20 6 9 17l-5-5"/>
+      </svg>
+      <h2 class="about-card__title">What counts as &ldquo;read&rdquo;</h2>
+      <p class="about-card__text">
+        A book only earns a spot on the shelf once it&rsquo;s finished, cover to cover.
+        Nothing gets logged half-way through, and nothing gets a review it hasn&rsquo;t
+        actually earned.
+      </p>
+    </article>
+  </div>
+</section>
+
+<section class="about-quote wrap">
+  <svg class="about-quote__mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4c-6 0-11 4-13 11l-2 5 5-2C17 16 20 11 20 4Z"/><path d="M12 12 5 19"/></svg>
+  <p class="about-quote__text">The books that change you are rarely the ones that impress you.</p>
+  <p class="about-quote__meta">&mdash; a small working theory behind this shelf</p>
+</section>
+
+<section class="about-cta wrap">
+  <h2 class="about-cta__title">Curious what&rsquo;s on the shelf?</h2>
+  <a class="btn btn--primary" href="/">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V6a2 2 0 0 1 2-2h9v15M4 19a2 2 0 0 0 2 2h11M4 19a2 2 0 0 1 2-2h9"/></svg>
+    Browse the shelf
+  </a>
+</section>
+
+<%- include("partials/footer") %>

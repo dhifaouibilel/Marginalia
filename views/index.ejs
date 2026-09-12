@@ -6,7 +6,7 @@
   const fmtDate = (d) =>
     new Date(d).toLocaleDateString("en-US", { month: "long", year: "numeric" });
 
-  const avgRating = books.reduce((s, b) => s + b.rating, 0) / books.length;
+  const avgRating = books.length ? books.reduce((s, b) => s + b.rating, 0) / books.length : 0;
 
   // data for the client-side "Surprise me" swap (no page reload)
   const booksData = books.map((b) => ({
@@ -58,41 +58,46 @@
         <div><span class="hero-stat__num"><%= genres.length %></span><span class="hero-stat__label">themes</span></div>
       </div>
     </div>
+      <% if (featured) { %>
       <a class="book-card-link" href="/books/<%= featured.id %>">
-    <article class="pick-card" data-genre="<%= featured.genre %>">
-      <span class="pick-card__tag">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8L4.5 9.2l5.9-.9L12 3Z"/></svg>
-        Random pick
-      </span>
+        <article class="pick-card" data-genre="<%= featured.genre %>">
+          <span class="pick-card__tag">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8L4.5 9.2l5.9-.9L12 3Z"/></svg>
+            Random pick
+          </span>
 
-      <div class="pick-card__grid">
-        <img class="pick-card__cover" src="<%= featured.cover %>" alt="Cover of <%= featured.title %>" />
+          <div class="pick-card__grid">
+            <img class="pick-card__cover" src="<%= featured.cover %>" alt="Cover of <%= featured.title %>" />
 
-        <div>
-          <h2 class="pick-card__title"><%= featured.title %></h2>
-          <p class="pick-card__author">by <%= featured.author %></p>
-          <div class="rating-line">
-            <span class="rating" style="--rating: <%= featured.rating %>;" aria-label="Rated <%= featured.rating %> out of 5">
-              <span class="stars-track">★★★★★</span>
-              <span class="stars-fill">★★★★★</span>
-            </span>
-            <span class="rating-number"><%= featured.rating.toFixed(1) %> / 5</span>
+            <div>
+              <h2 class="pick-card__title"><%= featured.title %></h2>
+              <p class="pick-card__author">by <%= featured.author %></p>
+              <div class="rating-line">
+                <span class="rating" style="--rating: <%= featured.rating %>;" aria-label="Rated <%= featured.rating %> out of 5">
+                  <span class="stars-track">★★★★★</span>
+                  <span class="stars-fill">★★★★★</span>
+                </span>
+                <span class="rating-number"><%= featured.rating.toFixed(1) %> / 5</span>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
 
-      <p class="pick-card__resume"><%= featured.resume %></p>
+          <p class="pick-card__resume"><%= featured.resume %></p>
 
-      <div class="pick-card__meta">
-        <span class="pill pill--theme"><%- themeIcon(featured.genre) %><span class="js-genre"><%= featured.genre %></span></span>
-        <span class="pill">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>
-          Read <span class="js-date"><%= fmtDate(featured.date_read) %></span>
-        </span>
+          <div class="pick-card__meta">
+            <span class="pill pill--theme"><%- themeIcon(featured.genre) %><span class="js-genre"><%= featured.genre %></span></span>
+            <span class="pill">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>
+              Read <span class="js-date"><%= fmtDate(featured.date_read) %></span>
+            </span>
+          </div>
+        </article>
+      </a>
+      <% } else { %>
+      <div class="pick-card pick-card--empty">
+        <p class="pick-card__empty-text">No books matched &ldquo;<%= typeof query !== "undefined" ? query : "" %>&rdquo; &mdash; try another title.</p>
       </div>
-    </article>
-    </a>
-   
+      <% } %>
   </div>
 
   <a class="scroll-cue" href="#shelf" aria-label="Scroll to the shelf">
@@ -122,10 +127,8 @@
 </div>
 
   <div class="book-grid">
-    <%- include("partials/book-cards", { books }) %>
+    <%- include("partials/book-cards", { books, query: typeof query !== "undefined" ? query : null }) %>
   </div>
-
-  <!-- <p class="empty-state" hidden>No books under that theme yet.</p> -->
 </section>
 
 <script type="application/json" id="books-data"><%- JSON.stringify(booksData) %></script>
@@ -155,6 +158,9 @@
           slug === "all" ? `${shown} books` : `${shown} of ${total} books`;
 
         history.replaceState(null, "", slug === "all" ? "/" : `/genre/${slug}`);
+
+        // keep an active title search applied to the freshly-fetched cards
+        if (typeof window.reapplyBookSearch === "function") window.reapplyBookSearch();
       });
     });
 

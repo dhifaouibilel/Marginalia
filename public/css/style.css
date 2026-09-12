@@ -181,6 +181,96 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round
   background: color-mix(in srgb, var(--ink-blue) 14%, transparent);
 }
 
+button.mastnav__link {
+  font: inherit;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+/* ---------------------------------------------------------
+   Inline search — clicking "Browse" extends a search field right out
+   of the button's own spot in the nav; the button fades, the field
+   grows in its place (and beyond it), magnifier icon at its right edge.
+--------------------------------------------------------- */
+.browse-slot {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.browse-slot .mastnav__link {
+  transition: opacity 0.28s ease;
+}
+
+.masthead.is-searching .browse-slot .mastnav__link {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.masthead.is-searching .mastnav > a.mastnav__link {
+  opacity: 0.35;
+  pointer-events: none;
+  transition: opacity 0.28s ease;
+}
+
+.inline-search {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  padding: 0;
+  border-radius: 999px;
+  pointer-events: none;
+  transition: max-width 0.55s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s ease,
+    padding 0.55s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.masthead.is-searching .inline-search {
+  max-width: 300px;
+  opacity: 1;
+  padding: 6px 14px;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  pointer-events: auto;
+}
+
+.inline-search__input {
+  width: 220px;
+  max-width: 100%;
+  min-width: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  font-size: 14.5px;
+  color: var(--ink);
+  outline: none;
+  padding: 2px;
+}
+
+.inline-search__input::placeholder { color: var(--ink-faint); }
+
+.inline-search__submit {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--ink-blue);
+}
+
+.inline-search__icon { width: 18px; height: 18px; flex-shrink: 0; }
+.inline-search__input::-webkit-search-cancel-button { display: none; }
+
 /* ---------------------------------------------------------
    1 · Featured review
 --------------------------------------------------------- */
@@ -963,6 +1053,123 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round
 }
 
 /* ---------------------------------------------------------
+   About page
+--------------------------------------------------------- */
+.about-hero {
+  padding: 140px 32px 56px;
+  max-width: 760px;
+}
+
+.about-hero__title {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: clamp(32px, 4.6vw, 48px);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin: 14px 0 18px;
+}
+
+.about-hero__lede {
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+  max-width: 60ch;
+  margin: 0 0 8px;
+}
+
+.about-hero__stats { margin-top: 30px; }
+
+.about-section { padding-bottom: 20px; }
+
+.about-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.about-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 26px;
+}
+
+.about-card__icon {
+  width: 26px;
+  height: 26px;
+  color: var(--ink-blue);
+  margin-bottom: 14px;
+}
+
+.about-card:nth-child(2) .about-card__icon { color: var(--gold); }
+.about-card:nth-child(3) .about-card__icon { color: var(--terracotta); }
+
+.about-card__title {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 19px;
+  margin: 0 0 10px;
+  color: var(--ink);
+}
+
+.about-card__text {
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+.about-quote {
+  max-width: 620px;
+  text-align: center;
+  padding: 48px 32px;
+}
+
+.about-quote__mark {
+  width: 24px;
+  height: 24px;
+  color: var(--ink-blue);
+  margin: 0 auto 16px;
+}
+
+.about-quote__text {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 21px;
+  line-height: 1.5;
+  color: var(--ink);
+  margin: 0 0 10px;
+}
+
+.about-quote__meta {
+  font-size: 13px;
+  color: var(--ink-faint);
+  margin: 0;
+}
+
+.about-cta {
+  max-width: 760px;
+  text-align: center;
+  padding: 24px 32px 100px;
+}
+
+.about-cta__title {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 24px;
+  color: var(--ink);
+  margin: 0 0 22px;
+}
+
+@media (max-width: 640px) {
+  .about-hero { padding: 104px 20px 44px; }
+  .about-section, .about-quote, .about-cta { padding-left: 20px; padding-right: 20px; }
+  .about-hero__stats { gap: 20px; flex-wrap: wrap; }
+}
+
+/* ---------------------------------------------------------
    Footer
 --------------------------------------------------------- */
 .sitefoot {
@@ -1065,6 +1272,8 @@ button:focus-visible {
 
 @media (max-width: 640px) {
   .wrap, .masthead__inner, .sitefoot__inner { padding-left: 20px; padding-right: 20px; }
+  .masthead.is-searching .inline-search { max-width: 54vw; }
+  .inline-search__input { width: 100%; }
   .mastnav__link span { display: none; }
   .mastnav__link { padding: 9px; }
   .featured { padding-top: 96px; }

@@ -188,6 +188,14 @@ export async function getBookById(id) {
   return rows[0] || null;
 }
 
+export async function getBookByTitle(query) {
+  const { rows } = await db.query(
+    `select id from books where title ilike $1`,
+    [`%${query}%`]
+  );
+  return rows[0] || null;
+}
+
 export async function addBook(book) {
 //   await db.query("select id, name from genres order by name");
     const {title, author, cover_url, date_read, resume, rating, genre_id} = book
@@ -195,8 +203,10 @@ export async function addBook(book) {
 }
 
 
+// DB/queries.js
 export async function deleteBook(bookId) {
-    await db.query("delete from books where id=$1",[bookId])
+  const { rows } = await db.query("delete from books where id = $1 returning id", [bookId]);
+  return rows[0] || null;
 }
 
 

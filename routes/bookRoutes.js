@@ -1,14 +1,16 @@
 // routes/bookRoutes.js
 import express from "express";
-import { getBooks, getBookCards, newBook, createBook, getBookDetails, deleteBook, editBookForm, editBook } from "../controllers/bookController.js";
+import { getBooks, getBookCards, newBook, createBook, getBookDetails, deleteBook, editBookForm, editBook, searchByTitle, getAbout } from "../controllers/bookController.js";
 //, createBook, deleteBook, updateBook
 
 const router = express.Router();
 router.get("/", getBooks);
+router.get("/about", getAbout);
 router.get("/genre/:slug", getBooks);       // ← you dropped this one; see #4
 router.get("/api/books", getBookCards);
 router.get("/api/books/:slug", getBookCards);
 router.get("/books/:id", getBookDetails)
+router.get("/search", searchByTitle)
 
 
 router.get("/add", newBook)
