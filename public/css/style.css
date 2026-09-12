@@ -430,6 +430,10 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round
   line-height: 1.6;
   color: var(--ink-soft);
   margin: 14px 0 15px;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .pick-card__meta {
@@ -721,6 +725,103 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round
     opacity: 1;
     transform: none;
   }
+}
+
+/* ---------------------------------------------------------
+   Add-book form
+--------------------------------------------------------- */
+.form-section.wrap {
+  max-width: 640px;
+  padding: 140px 32px 96px;
+}
+
+.form-section .shelf-head { margin-bottom: 8px; }
+
+.form-error {
+  color: var(--cta);
+  background: color-mix(in srgb, var(--cta) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--cta) 30%, transparent);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 13.5px;
+  margin: 20px 0 0;
+}
+
+.book-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 28px;
+  margin-top: 28px;
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.field input,
+.field select,
+.field textarea {
+  font: inherit;
+  font-size: 14.5px;
+  color: var(--ink);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  transition: border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.field select { appearance: none; background-image: none; }
+
+.field textarea {
+  resize: vertical;
+  min-height: 96px;
+  line-height: 1.5;
+}
+
+.field input::placeholder,
+.field textarea::placeholder { color: var(--ink-faint); }
+
+.field input:focus-visible,
+.field select:focus-visible,
+.field textarea:focus-visible {
+  outline: none;
+  border-color: var(--ink-blue);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ink-blue) 18%, transparent);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+@media (max-width: 560px) {
+  .form-section.wrap { padding-top: 104px; }
+  .field-row { grid-template-columns: 1fr; }
+  .form-actions { flex-direction: column-reverse; align-items: stretch; }
+  .form-actions .btn { justify-content: center; }
 }
 
 /* ---------------------------------------------------------

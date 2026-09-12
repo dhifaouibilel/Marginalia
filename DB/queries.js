@@ -177,6 +177,12 @@ export async function getGenres() {
   }));
 }
 
+export async function addBook(book) {
+//   await db.query("select id, name from genres order by name");
+    const {title, author, cover_url, date_read, resume, rating, genre_id} = book
+  await db.query("insert into books (title, author, resume, cover_url, rating, date_read, genre_id) values ($1,$2,$3,$4,$5,$6,$7)", [title, author, resume, cover_url, rating, date_read, genre_id])
+}
+
 // export async function createBook(book) {
 //     db.query("insert into books (title, author, cover_url, isbn, rating, date_read, resume,)")
 // }

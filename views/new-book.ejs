@@ -1,0 +1,75 @@
+<%- include("partials/header") %>
+
+<section class="form-section wrap">
+  <header class="shelf-head">
+    <h1 class="shelf-head__title">Add a book</h1>
+    <p class="shelf-head__sub">Log a new read onto the shelf.</p>
+  </header>
+
+  <% if (typeof error !== "undefined" && error) { %>
+    <p class="form-error"><%= error %></p>
+  <% } %>
+
+  <form class="book-form" action="/add" method="POST" novalidate>
+    <div class="field">
+      <label for="title">Title</label>
+      <input id="title" name="title" type="text" placeholder="The Midnight Library" required autofocus
+             value="<%= typeof values !== 'undefined' && values ? values.title : '' %>" />
+    </div>
+
+    <div class="field">
+      <label for="author">Author</label>
+      <input id="author" name="author" type="text" placeholder="Matt Haig" required
+             value="<%= typeof values !== 'undefined' && values ? values.author : '' %>" />
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="genre_id">Theme</label>
+        <select id="genre_id" name="genre_id" required>
+          <option value="" disabled selected>Choose a theme&hellip;</option>
+          <% genres.forEach(function (g) { %>
+            <option value="<%= g.id %>"><%= g.name %></option>
+          <% }); %>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="rating">Rating</label>
+        <input id="rating" name="rating" type="number" min="0" max="5" step="0.5" placeholder="4.5" required
+               value="<%= typeof values !== 'undefined' && values ? values.rating : '' %>" />
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="cover_url">Cover image URL</label>
+        <input id="cover_url" name="cover_url" type="url"
+               placeholder="https://covers.openlibrary.org/b/isbn/9780000000000-L.jpg"
+               value="<%= typeof values !== 'undefined' && values ? values.cover_url : '' %>" />
+      </div>
+
+      <div class="field">
+        <label for="date_read">Date read</label>
+        <input id="date_read" name="date_read" type="date" required
+               value="<%= typeof values !== 'undefined' && values ? values.date_read : '' %>" />
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="resume">Your take</label>
+      <textarea id="resume" name="resume" rows="4" required
+                placeholder="A short, spoiler-free take on the book&hellip;"><%= typeof values !== "undefined" && values ? values.resume : "" %></textarea>
+    </div>
+
+    <div class="form-actions">
+      <a class="btn btn--ghost" href="/">Cancel</a>
+      <button class="btn btn--primary" type="submit">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        Add to the shelf
+      </button>
+    </div>
+  </form>
+</section>
+
+<%- include("partials/footer") %>

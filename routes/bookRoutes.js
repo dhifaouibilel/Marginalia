@@ -1,6 +1,6 @@
 // routes/bookRoutes.js
 import express from "express";
-import { getBooks, getBookCards } from "../controllers/bookController.js";
+import { getBooks, getBookCards, newBook, createBook } from "../controllers/bookController.js";
 //, createBook, deleteBook, updateBook
 
 const router = express.Router();
@@ -10,7 +10,8 @@ router.get("/api/books", getBookCards);
 router.get("/api/books/:slug", getBookCards);
 
 
-// router.post("/add", createBook)
+router.get("/add", newBook)
+router.post("/add", createBook)
 // router.post("/delete", deleteBook)
 // router.post("/edit", updateBook)
 
